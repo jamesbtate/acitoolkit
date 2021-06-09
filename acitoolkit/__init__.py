@@ -44,6 +44,7 @@ from .acitoolkit import (  # noqa
     PhysDomain, PortChannel, Search, Subnet, Taboo, Tenant, TunnelInterface,
     VMM, VMMCredentials, VmmDomain, VMMvSwitchInfo, Tag, _interface_from_dn
 )
+from .acitoolkit import AccessEntityProfile
 from .acitoolkitlib import Credentials, AcitoolkitGraphBuilder  # noqa
 from .acifakeapic import FakeSession  # noqa
 # Dependent on acitoolkit
