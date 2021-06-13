@@ -1130,8 +1130,11 @@ class BaseACIObject(AciSearch):
             log.error('Could not get %s. Received response: %s', query_url, ret.text)
             return resp
         for object_data in data:
-            name = str(object_data[apic_class]['attributes']['name'])
-            obj = toolkit_class(name, parent)
+            if 'name' in object_data[apic_class]['attributes']:
+                name = str(object_data[apic_class]['attributes']['name'])
+                obj = toolkit_class(name, parent)
+            else:
+                obj = toolkit_class(parent)
             attribute_data = object_data[apic_class]['attributes']
             obj._populate_from_attributes(attribute_data)
             resp.append(obj)
