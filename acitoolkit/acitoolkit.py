@@ -1499,6 +1499,10 @@ class EPG(CommonEPG):
         table = Table(data, headers, title=title + 'EPGs')
         return [table, ]
 
+    @staticmethod
+    def _get_children_classes():
+        return ['fvRsBd', 'fvRsDomAtt', 'fvRtFuncToEpg']
+
 
 class OutsideEPG(CommonEPG):
     """
@@ -5832,7 +5836,6 @@ class PhysDomain(BaseACIObject):
         """
         return self._parent
 
-
     @staticmethod
     def get_url(fmt='json'):
         """
@@ -5940,157 +5943,9 @@ class PhysDomain(BaseACIObject):
                 return obj
         return None
 
-
-class AccessEntityProfile(BaseACIObject):
-    """
-    (Attachable) Access Entity Profile (AAEP)
-    """
-
-    def __init__(self, name, parent=None):
-        """
-        :param name: String containing the PhysDomain name
-        :param parent: An instance of DomP class representing
-        """
-        self.dn = None
-        self.lcOwn = None
-        self.childAction = None
-        self.descr = None
-        self.name = name
-        super(AccessEntityProfile, self).__init__(name, parent)
-
-
-    def get_json(self):
-        """
-        Returns json representation of the physDomP object
-
-        :returns: A json dictionary of physical domain
-        """
-        attr = self._generate_attributes()
-        children = []
-        return super(AccessEntityProfile, self).get_json(self._get_apic_classes()[0],
-                                                         attributes=attr,
-                                                         children=children)
-
-    def _generate_attributes(self):
-        """
-        Gets the attributes used in generating the JSON for the object
-        """
-        attributes = dict()
-        if self.name:
-            attributes['name'] = self.name
-        if self.descr:
-            attributes['descr'] = self.descr
-        if self.dn:
-            attributes['dn'] = self.dn
-        if self.lcOwn:
-            attributes['lcOwn'] = self.lcOwn
-        if self.childAction:
-            attributes['childAction'] = self.childAction
-        return attributes
-
-    @classmethod
-    def _get_apic_classes(cls):
-        """
-        Get the APIC classes used by this acitoolkit class.
-
-        :returns: list of strings containing APIC class names
-        """
-        return ['infraAttEntityP']
-
-    def get_parent(self):
-        """
-        :returns: Parent of this object.
-        """
-        return self._parent
-
-
-    @staticmethod
-    def get_url(fmt='json'):
-        """
-        Get the URL used to push the configuration to the APIC
-        if no format parameter is specified, the format will be 'json'
-        otherwise it will return '/api/mo/uni.' with the format string
-        appended.
-
-        :param fmt: optional format string, default is 'json'
-        :returns: URL string
-        """
-        return '/api/mo/uni.' + fmt
-
-    def push_to_apic(self, session):
-        """
-        Push the appropriate configuration to the APIC for this Phys Domain.
-        All of the subobject configuration will also be pushed.
-
-        :param session: the instance of Session used for APIC communication
-        :returns: Requests Response code
-        """
-        resp = session.push_to_apic(self.get_url(),
-                                    self.get_json())
-        return resp
-
-    @classmethod
-    def get(cls, session):
-        """
-        Gets all of the Physical Domains from the APIC
-
-        :param session: the instance of Session used for APIC communication
-        :returns: List of PhysDomain objects
-
-        """
-        toolkit_class = cls
-        apic_class = cls._get_apic_classes()[0]
-        parent = None
-        log.debug('%s.get called', cls.__name__)
-        query_url = (('/api/mo/uni.json?query-target=subtree&'
-                      'target-subtree-class=') + str(apic_class))
-        ret = session.get(query_url)
-        data = ret.json()['imdata']
-
-        log.debug('response returned %s', data)
-        resp = []
-        for object_data in data:
-            name = str(object_data[apic_class]['attributes']['name'])
-            obj = toolkit_class(name, parent)
-            attribute_data = object_data[apic_class]['attributes']
-            obj._populate_from_attributes(attribute_data)
-            obj.dn = object_data[apic_class]['attributes']['dn']
-            obj.lcOwn = object_data[apic_class]['attributes']['lcOwn']
-            obj.childAction = object_data[apic_class]['attributes']['childAction']
-            resp.append(obj)
-        return resp
-
-
-    @classmethod
-    def get_by_name(cls, session, aaep_name):
-        """
-        Gets a particular AAEP from the APIC by name
-
-        :param aaep_name:
-        :param session: the instance of Session used for APIC communication
-        :returns: List of PhysDomain objects
-        """
-        toolkit_class = cls
-        apic_class = cls._get_apic_classes()[0]
-        parent = None
-        log.debug('%s.get called', cls.__name__)
-        query_url = (('/api/mo/uni.json?query-target=subtree&'
-                      'target-subtree-class=') + str(apic_class))
-        ret = session.get(query_url)
-        data = ret.json()['imdata']
-        log.debug('response returned %s', data)
-        for object_data in data:
-            name = str(object_data[apic_class]['attributes']['name'])
-            obj = toolkit_class(name, parent)
-            attribute_data = object_data[apic_class]['attributes']
-            obj._populate_from_attributes(attribute_data)
-            obj.dn = object_data[apic_class]['attributes']['dn']
-            obj.lcOwn = object_data[apic_class]['attributes']['lcOwn']
-            obj.childAction = object_data[apic_class]['attributes']['childAction']
-            obj.descr = object_data[apic_class]['attributes']['descr']
-            if name == aaep_name:
-                return obj
-        return None
+    # @staticmethod
+    # def _get_children_classes():
+    #     return ['infraRtDomAtt', 'infraRtDomP']
 
 
 class VmmDomain(BaseACIObject):
@@ -7670,7 +7525,7 @@ class LogicalModel(BaseACIObject):
         If they don't have children, this will return an empty list.
         :return: list of classes
         """
-        return [Tenant]
+        return [Tenant]  # todo: Add PhysicalDomain and AccessEntityProfile here.
 
     @classmethod
     def _get_apic_classes(cls):
