@@ -8,7 +8,7 @@ from .acitoolkit import EPG
 log = logging.getLogger(__name__)
 
 
-class EPGAttachment(BaseACIObject):
+class EPG_AAEP(BaseACIObject):
     """ Represents a 'infraRsFuncToEpg' in APIC API (EPG attachment to AAEP)
 
     This object specifies an EPG with a certain encapsulation attached to an AAEP. Technically,
@@ -24,12 +24,12 @@ class EPGAttachment(BaseACIObject):
         :param encap: the string representation of the encapsulation e.g. 'vlan-123'
         """
         if parent:
-            if not isinstance(parent, AccessEntityProfile):
+            if not isinstance(parent, AAEP):
                 raise TypeError("Parent must be instance of AccessEntityProfile")
         if epg:
             if not isinstance(epg, EPG):
                 raise TypeError("epg parameter must be instance of EPG class")
-        super(EPGAttachment, self).__init__('asdf', parent)
+        super(EPG_AAEP, self).__init__('asdf', parent)
         self.dn = None
         self.lcOwn = None
         self.childAction = None
@@ -57,7 +57,7 @@ class EPGAttachment(BaseACIObject):
 
         :returns: class of parent object
         """
-        return AccessEntityProfile
+        return AAEP
 
     def get_parent(self):
         """
@@ -71,7 +71,7 @@ class EPGAttachment(BaseACIObject):
         :returns: A json dictionary of physical domain
         """
         attr = self._generate_attributes()
-        return super(EPGAttachment, self).get_json(self._get_apic_classes()[0], attributes=attr)
+        return super(EPG_AAEP, self).get_json(self._get_apic_classes()[0], attributes=attr)
 
     @staticmethod
     def get_url(fmt='json'):
@@ -109,7 +109,7 @@ class EPGAttachment(BaseACIObject):
         apic_class = cls._get_apic_classes()[0]
         parent = None
         log.debug('%s.get called', cls.__name__)
-        return super(EPGAttachment, cls).get(session, toolkit_class, apic_class, parent)
+        return super(EPG_AAEP, cls).get(session, toolkit_class, apic_class, parent)
 
     def _generate_attributes(self):
         """
@@ -166,7 +166,7 @@ class EPGAttachment(BaseACIObject):
         return True
 
 
-class PhysDomainAttachment(BaseACIObject):
+class PDom_AAEP(BaseACIObject):
     """ Represents a 'infraRsDomP' in APIC API (pdom attachment to AAEP)
 
     This object specifies a particular physical domain attached to a particular AAEP
@@ -186,7 +186,7 @@ class PhysDomainAttachment(BaseACIObject):
 
         :returns: class of parent object
         """
-        return AccessEntityProfile
+        return AAEP
 
     def get_parent(self):
         """
@@ -195,7 +195,7 @@ class PhysDomainAttachment(BaseACIObject):
         return self._parent
 
 
-class AccessEntityProfile(BaseACIObject):
+class AAEP(BaseACIObject):
     """ (Attachable) Access Entity Profile (AAEP)
 
     Represents an AAEP which has associations with physical domains and EPGs.
@@ -212,7 +212,7 @@ class AccessEntityProfile(BaseACIObject):
         self.childAction = None
         self.descr = None
         self.name = name
-        super(AccessEntityProfile, self).__init__(name, parent)
+        super(AAEP, self).__init__(name, parent)
 
 
     def get_json(self):
@@ -223,9 +223,9 @@ class AccessEntityProfile(BaseACIObject):
         """
         attr = self._generate_attributes()
         children = []
-        return super(AccessEntityProfile, self).get_json(self._get_apic_classes()[0],
-                                                         attributes=attr,
-                                                         children=children)
+        return super(AAEP, self).get_json(self._get_apic_classes()[0],
+                                          attributes=attr,
+                                          children=children)
 
     def _generate_attributes(self):
         """
@@ -285,7 +285,7 @@ class AccessEntityProfile(BaseACIObject):
         return resp
 
     @classmethod
-    def get(cls, session):
+    def get(cls, session, parent=None):
         """
         Gets all of the Physical Domains from the APIC
 
@@ -295,7 +295,6 @@ class AccessEntityProfile(BaseACIObject):
         """
         toolkit_class = cls
         apic_class = cls._get_apic_classes()[0]
-        parent = None
         log.debug('%s.get called', cls.__name__)
         query_url = (('/api/mo/uni.json?query-target=subtree&'
                       'target-subtree-class=') + str(apic_class))
@@ -323,9 +322,6 @@ class AccessEntityProfile(BaseACIObject):
         """
         pass
         # todo
-
-
-
 
     @classmethod
     def get_by_name(cls, session, aaep_name):
