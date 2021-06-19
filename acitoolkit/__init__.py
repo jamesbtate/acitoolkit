@@ -44,7 +44,7 @@ from .acitoolkit import (  # noqa
     PhysDomain, PortChannel, Search, Subnet, Taboo, Tenant, TunnelInterface,
     VMM, VMMCredentials, VmmDomain, VMMvSwitchInfo, Tag, _interface_from_dn
 )
-from .accessEntityProfile import AccessEntityProfile, EPGAttachment, PhysDomainAttachment
+from .aaep import AAEP, EPG_AAEP, PDom_AAEP
 from .acitoolkitlib import Credentials, AcitoolkitGraphBuilder  # noqa
 from .acifakeapic import FakeSession  # noqa
 # Dependent on acitoolkit
