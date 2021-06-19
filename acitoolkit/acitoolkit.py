@@ -5862,7 +5862,7 @@ class PhysDomain(BaseACIObject):
         return resp
 
     @classmethod
-    def get(cls, session):
+    def get(cls, session, parent=None):
         """
         Gets all of the Physical Domains from the APIC
 
@@ -5872,7 +5872,6 @@ class PhysDomain(BaseACIObject):
         """
         toolkit_class = cls
         apic_class = cls._get_apic_classes()[0]
-        parent = None
         log.debug('%s.get called', cls.__name__)
         query_url = (('/api/mo/uni.json?query-target=subtree&'
                       'target-subtree-class=') + str(apic_class))
@@ -7525,7 +7524,7 @@ class LogicalModel(BaseACIObject):
         If they don't have children, this will return an empty list.
         :return: list of classes
         """
-        return [Tenant]  # todo: Add PhysicalDomain and AccessEntityProfile here.
+        return [Tenant, PhysDomain]  # todo: Add PhysicalDomain and AccessEntityProfile here.
 
     @classmethod
     def _get_apic_classes(cls):
