@@ -270,7 +270,7 @@ class AAEP(BaseACIObject):
         :param fmt: optional format string, default is 'json'
         :returns: URL string
         """
-        return '/api/mo/uni.' + fmt
+        return '/api/mo/uni/infra.' + fmt
 
     def push_to_apic(self, session):
         """
