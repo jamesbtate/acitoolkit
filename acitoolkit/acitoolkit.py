@@ -1502,7 +1502,7 @@ class EPG(CommonEPG):
 
     @staticmethod
     def _get_children_classes():
-        return ['fvRsBd', 'fvRsDomAtt', 'fvRtFuncToEpg']
+        return [EPGDomain,]  # ['fvRsBd', 'fvRtFuncToEpg']
 
 
 class OutsideEPG(CommonEPG):
@@ -6472,7 +6472,7 @@ class EPGDomain(BaseACIObject):
         return obj
 
     @classmethod
-    def get(cls, session):
+    def get(cls, session, parent=None):
         """
         Gets all of the Physical Domains from the APIC
 

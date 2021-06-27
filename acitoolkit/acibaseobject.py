@@ -1137,6 +1137,7 @@ class BaseACIObject(AciSearch):
                 obj = toolkit_class(parent)
             attribute_data = object_data[apic_class]['attributes']
             obj._populate_from_attributes(attribute_data)
+            obj._session = session
             resp.append(obj)
         return resp
 
