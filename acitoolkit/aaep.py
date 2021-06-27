@@ -8,7 +8,7 @@ from .acitoolkit import EPG
 log = logging.getLogger(__name__)
 
 
-class EPG_AAEP(BaseACIObject):
+class AAEP_EPG(BaseACIObject):
     """ Represents a 'infraRsFuncToEpg' in APIC API (EPG attachment to AAEP)
 
     This object specifies an EPG with a certain encapsulation attached to an AAEP. Technically,
@@ -29,7 +29,7 @@ class EPG_AAEP(BaseACIObject):
         if epg:
             if not isinstance(epg, EPG):
                 raise TypeError("epg parameter must be instance of EPG class")
-        super(EPG_AAEP, self).__init__('asdf', parent)
+        super(AAEP_EPG, self).__init__('asdf', parent)
         self.dn = None
         self.lcOwn = None
         self.childAction = None
@@ -71,7 +71,7 @@ class EPG_AAEP(BaseACIObject):
         :returns: A json dictionary of physical domain
         """
         attr = self._generate_attributes()
-        return super(EPG_AAEP, self).get_json(self._get_apic_classes()[0], attributes=attr)
+        return super(AAEP_EPG, self).get_json(self._get_apic_classes()[0], attributes=attr)
 
     @staticmethod
     def get_url(fmt='json'):
@@ -109,7 +109,7 @@ class EPG_AAEP(BaseACIObject):
         apic_class = cls._get_apic_classes()[0]
         parent = None
         log.debug('%s.get called', cls.__name__)
-        return super(EPG_AAEP, cls).get(session, toolkit_class, apic_class, parent)
+        return super(AAEP_EPG, cls).get(session, toolkit_class, apic_class, parent)
 
     def _generate_attributes(self):
         """
@@ -166,7 +166,7 @@ class EPG_AAEP(BaseACIObject):
         return True
 
 
-class PDom_AAEP(BaseACIObject):
+class AAEP_PhysDomain(BaseACIObject):
     """ Represents a 'infraRsDomP' in APIC API (pdom attachment to AAEP)
 
     This object specifies a particular physical domain attached to a particular AAEP
